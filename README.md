@@ -6,7 +6,7 @@
 | |  | (_) | |  | |_| |___| (_) | | | | |_| | | (_) | |
 |_|   \___/|_|   \__|\_____\___/|_| |_|\__|_|  \___/|_|                                                     
 
-Web dashboard made for the ESP32 Development board to test circuits.
+Webinterface made for the ESP32 Development board to test circuits.
 ```
 
 <br>
