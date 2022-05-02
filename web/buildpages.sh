@@ -1,3 +1,5 @@
+printf "" > pages.h
+
 ls -la *.html > pages
 
 while IFS= read -r line; do
@@ -8,6 +10,8 @@ while IFS= read -r line; do
     printf 'R"kotw(\n' > "$name.h"
     cat "$name.html" >> "$name.h"
     printf '\n)kotw";' >> "$name.h"
+
+    printf "const char* $name =\n#include \"$name.h\"\n" >> pages.h
 done < pages
 
 rm pages
