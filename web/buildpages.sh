@@ -11,7 +11,7 @@ while IFS= read -r line; do
     cat "$name.html" >> "$name.h"
     printf '\n)kotw";' >> "$name.h"
 
-    printf "const char* $name =\n#include \"$name.h\"\n" >> pages.h
+    printf "const char* page_$name =\n#include \"$name.h\"\n" >> pages.h
 done < pages
 
 rm pages
