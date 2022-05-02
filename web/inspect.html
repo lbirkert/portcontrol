@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PortControl - Inspect</title>
+        <script>
+            var gi = (i)=>document.getElementById(i);
+            var qs = (s)=>document.querySelector(s);
+
+            const params = new URLSearchParams(window.location.search);
+            const pin = params.get('pin') || 0;
+            const analog = params.has('analog');
+            const max = analog?4095:1;
+
+            function api_req(url) {
+                return new Promise(function(resolve, reject) {
+                    let xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange = function() {
+                        if(this.readyState == 4) (this.status == 200 ? resolve : reject)(this.responseText);
+                    };
+                    xmlhttp.open("GET", url, true);
+                    xmlhttp.send();
+                });
+            }
+
+            async function main() {
+                await api_req(`/input/${pin}`);
+
+                gi("desc").innerText = `Inspecting ${analog?"analog":"digital"} pin ${pin}`;
+                qs("main").className = "fadein";
+
+                const value = gi("value");
+                setInterval(async function() {
+                    let v = await api_req(`/${analog?"a":"d"}read/${pin}`);
+                    value.innerText = v;
+                    value.style = `color: hsl(${(v/max)*128}, 100%, 50%);`;
+                }, 200);
+            }
+
+            document.addEventListener("DOMContentLoaded", main);
+        </script>
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                font-family: sans-serif;
+                color: white;
+                font-size: 20px;
+                scrollbar-width: none;
+            }
+
+            *::-webkit-scrollbar {
+                display: none;
+            }
+
+            body {
+                background-color: black;
+                overflow: hidden;
+                overflow-y: scroll;
+                width: 100vw;
+            }
+
+            .hide {
+                display: none;
+            }
+
+            .fadein {
+                animation: fadein 1s ease forwards;
+            }
+            
+            @keyframes fadein {
+                from {
+                    opacity: 0;
+                }
+            }
+
+            main {
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: auto;
+                flex-direction: column;
+                row-gap: 10px;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            a {
+                text-decoration: none;
+                border-bottom: 1px solid orange;
+            }
+
+            #back {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+
+            #value {
+                font-size: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" id="back">Back</a>
+        <main class="hide">
+            <p id="desc"></p>
+            <span id="value"></span>
+        </main>
+    </body>
+</html>
