@@ -1,0 +1,5 @@
+{
+    "watch": ["."],
+    "ext": "html",
+    "exec": "./buildpages.sh"
+}
